@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLAMES Game</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body{
+            background-color: rgb(167, 158, 158);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes bounceIn {
+            from {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+            margin:10px;
+        }
+
+        .bounce-in {
+            animation: bounceIn 1s ease-in-out;
+        }
+
+        .pulse-icon {
+            animation: pulse 1.5s infinite;
+        }
+
+        .result-gif {
+            /* max-width: 150px; /* Adjust size as needed */
+            /* margin-top: 10px; */ 
+            object-fit:cover;
+        }
+        .btn:hover{
+            background-color: rgb(24, 30, 30);
+        }
+        .container{
+            display:none;
+        }
+        #btn1{
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            margin:50% auto;
+            width:100px;
+            background:black;
+            color:white;
+                }
+        .text{
+            text-align:center;
+        }
+    </style>
+    <script>
+        
+        function flames(name1, name2) {
+            // Function to remove common letters
+            function removeCommonLetters(s1, s2) {
+                for (let letter of s1) {
+                    if (s2.includes(letter)) {
+                        s2 = s2.replace(letter, '', 1);
+                    }
+                }
+                return s1.length + s2.length;
+            }
+
+            // FLAMES acronym
+            const flamesList = ['F', 'L', 'A', 'M', 'E', 'S'];
+            
+            // Remove common letters
+            const count = removeCommonLetters(name1, name2);
+            
+            // Determine the relationship
+            while (flamesList.length > 1) {
+                const index = (count - 1) % flamesList.length;
+                flamesList.splice(index, 1);
+            }
+            
+            const result = flamesList[0];
+            const relationships = {
+                'F': { name: 'Friendship', gif: 'happy.gif' },
+                'L': { name: 'Love', gif: 'peach-goma-peach-goma-love.gif' },
+                'A': { name: 'Affection', gif: 'posi1-lu.gif' },
+                'M': { name: 'Marriage', gif: 'happy-navaratri.gif' },
+                'E': { name: 'Enemy', gif:'youre-the-enemy-stan-marsh.gif' },
+                'S': { name: 'Sibling', gif: 'canticos-chickie.gif' }
+            };
+            
+            return relationships[result];
+        }
+
+        function getResult() {
+            const name1 = document.getElementById('name1').value.trim().toUpperCase();
+            const name2 = document.getElementById('name2').value.trim().toUpperCase();
+            const alertBox = document.getElementById('alert-box');
+            const resultElement = document.getElementById('result');
+            let btn=document.getElementById('btn');
+
+            if (name1 === "" || name2 === "") {
+                alertBox.classList.add('alert-danger', 'fade-in');
+                alertBox.textContent = "Please enter both names.";
+                alertBox.style.display = 'block';
+                resultElement.innerHTML = '';
+                return;
+            }
+
+            alertBox.style.display = 'none'; // Hide the alert box if names are valid
+
+            const result = flames(name1, name2);
+            resultElement.innerHTML = `
+                The relationship is: <strong>${result.name}</strong><br>
+                <img src="${result.gif}" alt="${result.name}" class="result-gif" width=200px>
+            `;
+            resultElement.classList.add('fade-in');
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+    const btn1 = document.getElementById('btn1');
+    const container = document.querySelector('.container');
+    const btn = document.getElementById('btn');
+    const h1=document.querySelector('.text');
+
+    btn1.addEventListener('click', () => {
+        container.style.display = 'block';
+        btn1.style.display = 'none';
+        h1.style.display='none';
+    });
+
+    btn.addEventListener('click', () => {
+        window.location.reload();
+    });
+});
+
+    
+    </script>
+</head>
+<body>
+    <h1 class="text">Flame game</h1>
+    <button class="btn btn-block" id="btn1">Start</button>
+    <div class="container mt-5 bounce-in">
+        <h1 class="text-center">FLAMES</h1>
+        <p class="text-center">Enter two names to find out your relationship:</p>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <input type="text" id="name1" class="form-control mb-2" placeholder="enter  name">
+                    <input type="text" id="name2" class="form-control mb-2" placeholder="enter lover name ">
+                </div>
+                <button class="btn btn-secondary btn-block" onclick="getResult()">Get Relationship</button>
+                <button class="btn btn-secondary btn-block" id="btn">refresh</button>
+                <div id="alert-box" class="alert" style="display:none;"></div>
+                <p id="result" class="text-center mt-3"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
